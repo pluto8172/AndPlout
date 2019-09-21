@@ -1,0 +1,168 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'androidx.navigation.safeargs.kotlin'
+
+android {
+    compileSdkVersion rootProject.ext.android["compileSdkVersion"]
+
+    useLibrary 'org.apache.http.legacy'
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android["minSdkVersion"]
+        targetSdkVersion rootProject.ext.android["targetSdkVersion"]
+        versionCode rootProject.ext.android["versionCode"]
+        versionName rootProject.ext.android["versionName"]
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    // work-runtime-ktx 2.1.0 and above now requires Java 8
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+}
+
+dependencies {
+
+    api 'androidx.multidex:multidex:2.0.1'
+    api project(':lib_kit')
+
+    kapt "androidx.room:room-compiler:${rootProject.ext.version["roomVersion"]}"
+    kapt "com.github.bumptech.glide:compiler:${rootProject.ext.version["glideVersion"]}"
+    api "androidx.appcompat:appcompat:${rootProject.ext.version["appCompatVersion"]}"
+    api "androidx.constraintlayout:constraintlayout:${rootProject.ext.version["constraintLayoutVersion"]}"
+    api "androidx.core:core-ktx:${rootProject.ext.version["ktxVersion"]}"
+    api "androidx.fragment:fragment-ktx:${rootProject.ext.version["fragmentVersion"]}"
+    api "androidx.lifecycle:lifecycle-extensions:${rootProject.ext.version["lifecycleVersion"]}"
+    api "androidx.lifecycle:lifecycle-livedata-ktx:${rootProject.ext.version["lifecycleVersion"]}"
+    api "androidx.lifecycle:lifecycle-viewmodel-ktx:${rootProject.ext.version["lifecycleVersion"]}"
+    api "androidx.navigation:navigation-fragment-ktx:${rootProject.ext.version["navigationVersion"]}"
+    api "androidx.navigation:navigation-ui-ktx:${rootProject.ext.version["navigationVersion"]}"
+    api "androidx.recyclerview:recyclerview:${rootProject.ext.version["recyclerViewVersion"]}"
+
+    api "androidx.room:room-runtime:${rootProject.ext.version["roomVersion"]}"
+    api 'com.tencent.wcdb:room:1.0.8'  // 代替 room-runtime，同时也不需要再引用 wcdb-android
+    annotationProcessor 'android.arch.persistence.room:compiler:1.1.1' // compiler 需要用 room 的
+
+    api "androidx.viewpager2:viewpager2:${rootProject.ext.version["viewPagerVersion"]}"
+    api "androidx.room:room-ktx:${rootProject.ext.version["roomVersion"]}"
+    api "androidx.work:work-runtime-ktx:${rootProject.ext.version["workVersion"]}"
+    api "com.github.bumptech.glide:glide:${rootProject.ext.version["glideVersion"]}"
+    api "com.google.android.material:material:${rootProject.ext.version["materialVersion"]}"
+    api "com.google.code.gson:gson:${rootProject.ext.version["gsonVersion"]}"
+    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${rootProject.ext.version["kotlinVersion"]}"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:${rootProject.ext.version["coroutinesVersion"]}"
+    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:${rootProject.ext.version["coroutinesVersion"]}"
+
+
+
+    // Testing dependencies
+    androidTestImplementation "androidx.arch.core:core-testing:${rootProject.ext.version["coreTestingVersion"]}"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:${rootProject.ext.version["espressoVersion"]}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${rootProject.ext.version["espressoVersion"]}"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:${rootProject.ext.version["espressoVersion"]}"
+    androidTestImplementation "androidx.test.ext:junit:${rootProject.ext.version["testExtJunit"]}"
+    androidTestImplementation "androidx.test.uiautomator:uiautomator:${rootProject.ext.version["uiAutomatorVersion"]}"
+    androidTestImplementation "androidx.work:work-testing:${rootProject.ext.version["workVersion"]}"
+    androidTestImplementation "com.google.truth:truth:${rootProject.ext.version["truthVersion"]}"
+    testImplementation "junit:junit:${rootProject.ext.version["junitVersion"]}"
+
+
+    //view
+    compileOnly rootProject.ext.dependencies["autolayout"]
+    api(rootProject.ext.dependencies["butterknife"]) {
+        exclude module: 'support-annotations'
+        exclude module: 'support-compat'
+    }
+
+    //rx
+    api rootProject.ext.dependencies["rxjava2"]
+    api(rootProject.ext.dependencies["rxandroid2"]) {
+        exclude module: 'rxjava'
+    }
+    api(rootProject.ext.dependencies["rxcache2"]) {
+        exclude module: 'rxjava'
+        exclude module: 'dagger'
+        exclude module: 'api'
+    }
+
+    api(rootProject.ext.dependencies["rxpermissions2"]) {
+        exclude module: 'rxjava'
+        exclude module: 'support-annotations'
+    }
+    api rootProject.ext.dependencies['rxerrorhandler2']
+
+    //network
+    api(rootProject.ext.dependencies["retrofit"]) {
+        exclude module: 'okhttp'
+        exclude module: 'okio'
+    }
+    implementation(rootProject.ext.dependencies["retrofit-converter-gson"]) {
+        exclude module: 'gson'
+        exclude module: 'okhttp'
+        exclude module: 'okio'
+        exclude module: 'retrofit'
+    }
+    implementation(rootProject.ext.dependencies["retrofit-adapter-rxjava2"]) {
+        exclude module: 'rxjava'
+        exclude module: 'okhttp'
+        exclude module: 'retrofit'
+        exclude module: 'okio'
+    }
+    api rootProject.ext.dependencies["okhttp3"]
+    compileOnly rootProject.ext.dependencies["glide"]
+    annotationProcessor(rootProject.ext.dependencies["glide-compiler"]) {
+        exclude module: 'jsr305'
+    }
+
+    //tools
+    compileOnly rootProject.ext.dependencies["javax.annotation"]
+
+    api rootProject.ext.dependencies["dagger2"]
+    //如果在app 的 build.gradle中如果有apply plugin: 'kotlin-kapt' 就要下面 这句dependencies { kapt 'com.google.dagger:dagger-compiler:2.13' }
+    kapt rootProject.ext.dependencies["dagger2-compiler"]
+
+    compileOnly rootProject.ext.dependencies["androideventbus"]
+    compileOnly rootProject.ext.dependencies["eventbus"]
+    api rootProject.ext.dependencies["gson"]
+
+    //test
+    api rootProject.ext.dependencies["timber"]
+
+    api(rootProject.ext.dependencies["rxlifecycle2"]) {
+        exclude module: 'rxjava'
+        exclude module: 'jsr305'
+    }
+    api(rootProject.ext.dependencies["rxlifecycle2-android"]) {
+        exclude module: 'support-annotations'
+        exclude module: 'rxjava'
+        exclude module: 'rxandroid'
+        exclude module: 'rxlifecycle'
+    }
+
+    implementation(rootProject.ext.dependencies["rxcache-jolyglot-gson"]) {
+        exclude module: 'gson'
+    }
+
+    api rootProject.ext.dependencies["paginate"]
+
+    // BaseRecyclerViewAdapterHelper
+    api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.42'
+
+    //微信支付sdk
+    api 'com.tencent.mm.opensdk:wechat-sdk-android-without-mta:5.3.1'
+}

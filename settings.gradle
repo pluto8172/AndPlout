@@ -1,0 +1,5 @@
+include ':app'
+include ':lib_base'
+include ':lib_kit'
+include ':module_component'
+rootProject.name='AndPlout'
